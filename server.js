@@ -34,7 +34,26 @@ app.post ('api/notes', (req, res) => {
     const newNotes = {
       title,
       text,
-    }
+    };
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
+      if (err) {
+        console.error(err);
+      } else {
+        // Convert string into JSON object
+        const parsedNote = JSON.parse(data);
+        parsedNote.push(newNotes);
+
+        // Write updated reviews back to the file
+        fs.writeFile(
+          './db/db.json',
+          JSON.stringify(parsedNote, null, 4),
+          (writeErr) =>
+            writeErr
+              ? console.error(writeErr)
+              : console.info('Successfully added a new note')
+        );
+      }
+    });
 
   const response = {
     status: 'success',
