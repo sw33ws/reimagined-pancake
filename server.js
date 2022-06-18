@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const dbjson = './db/db.json';
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -22,12 +23,12 @@ app.get('*', (req, res) => {
 
 
 // getting the notes info
-app.get('api/notes', (req, res) => {
-  res.sendFile(path.join(__dirname, './db/db.json'));
+app.get('/api/notes', (req, res) => {
+  res.sendFile(path.join(__dirname, dbjson));
 });
 
 // using the notes info
-app.post ('api/notes', (req, res) => {
+app.post ('/api/notes', (req, res) => {
   const { title, text } = req.body;
 
   if (title && text) {
@@ -36,7 +37,7 @@ app.post ('api/notes', (req, res) => {
       text,
     };
     // Obtain existing notes
-    fs.readFile('./db/db.json', 'utf8', (err, data) => {
+    fs.readFile(dbjson, 'utf8', (err, data) => {
       if (err) {
         console.error(err);
       } else {
@@ -46,7 +47,7 @@ app.post ('api/notes', (req, res) => {
 
         // Write updated notes back to the file
         fs.writeFile(
-          './db/db.json',
+          dbjson,
           JSON.stringify(parsedNote, null, 4),
           (writeErr) =>
             writeErr
