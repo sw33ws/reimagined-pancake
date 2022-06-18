@@ -1,7 +1,6 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const dbjson = './db/db.json';
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -9,11 +8,18 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 app.use(express.static('public'));
 
-
+// getting the notes info
+app.get('/api/notes', (req, res) => {
+  res.sendFile(path.join(__dirname, './db/db.json'));
+});
 
 // Html Routes
 app.get('/notes', (req, res) => {
   res.sendFile(path.join(__dirname, './public/notes.html'));
+});
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/index.html'));
 });
 
 app.get('*', (req, res) => {
@@ -21,11 +27,6 @@ app.get('*', (req, res) => {
 });
 
 
-
-// getting the notes info
-app.get('/api/notes', (req, res) => {
-  res.sendFile(path.join(__dirname, dbjson));
-});
 
 // using the notes info
 app.post ('/api/notes', (req, res) => {
@@ -37,7 +38,7 @@ app.post ('/api/notes', (req, res) => {
       text,
     };
     // Obtain existing notes
-    fs.readFile(dbjson, 'utf8', (err, data) => {
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
       if (err) {
         console.error(err);
       } else {
@@ -47,7 +48,7 @@ app.post ('/api/notes', (req, res) => {
 
         // Write updated notes back to the file
         fs.writeFile(
-          dbjson,
+          './db/db.json',
           JSON.stringify(parsedNote, null, 4),
           (writeErr) =>
             writeErr
@@ -68,7 +69,6 @@ app.post ('/api/notes', (req, res) => {
     res.status(500).json('Error in posting notes');
   }
 });
-
 
 
 
