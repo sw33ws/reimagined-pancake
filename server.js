@@ -30,11 +30,12 @@ app.get('api/notes', (req, res) => {
 app.post ('api/notes', (req, res) => {
   const { title, text } = req.body;
 
-  if (title, text) {
+  if (title && text) {
     const newNotes = {
       title,
       text,
     };
+    // Obtain existing reviews
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
       if (err) {
         console.error(err);
