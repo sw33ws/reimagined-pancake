@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 
-const PORT = process.envPORT || 3001;
+const PORT = process.env.PORT || 3001;
 const app = express();
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
@@ -35,7 +35,7 @@ app.post ('api/notes', (req, res) => {
       title,
       text,
     };
-    // Obtain existing reviews
+    // Obtain existing notes
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
       if (err) {
         console.error(err);
@@ -44,7 +44,7 @@ app.post ('api/notes', (req, res) => {
         const parsedNote = JSON.parse(data);
         parsedNote.push(newNotes);
 
-        // Write updated reviews back to the file
+        // Write updated notes back to the file
         fs.writeFile(
           './db/db.json',
           JSON.stringify(parsedNote, null, 4),
